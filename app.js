@@ -21,12 +21,23 @@ new Vue({
         required: validators.required,
         integer: validators.integer,
         between: validators.between(12, 120)
+      },
+      email: {
+        email: validators.email
       }
     }
   },
 
   methods: {
+    shouldAppendValidClass(field){
+      return !field.$invalid && field.$model && field.$dirty
+    },
+    shouldAppendErrorClass(field){
+      return field.$error
+    },
+
     submitForm() {
+      this.$v.form.$touch();
       if (!this.$v.form.$invalid) {
         console.log("Form Submitted", this.form);
       } else {
