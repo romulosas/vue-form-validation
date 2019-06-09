@@ -43,11 +43,34 @@
             <p v-else-if="!$v.form.age.integer" class="error-message">
               The age field should be an integer
             </p>
-            <p v-else-if="!$v.form.age.between" class="error-message">
+            <p v-else-if="!$v.form.age.oldEnoughAndAlive" class="error-message">
               The age field should be at least 12 and younger than 120 to
               continue
             </p>
           </div>
+        </div>
+        <div class="form-group">
+          <label for="newsletter">Subscribe to the newsletter:</label>
+          <input v-model="form.newsletter" type="checkbox" id="newsletter" />
+        </div>
+
+        <div class="form-group">
+          <label for="github-username">Github Username</label>
+          <input
+            v-model.lazy="$v.form.githubUsername.$model"
+            :class="{error: shouldAppendErrorClass($v.form.githubUsername), valid: shouldAppendValidClass($v.form.githubUsername)}"
+            id="github-username"
+          />
+          <span
+            v-show="$v.form.githubUsername.$pending"
+            class="fa fa-spinner fa-spin"
+          ></span>
+          <p
+            v-if="!$v.form.githubUsername.exists && $v.form.githubUsername.$error"
+            class="error-message"
+          >
+            There is not Github user with this username
+          </p>
         </div>
 
         <div class="form-group">
@@ -58,16 +81,36 @@
             :class="{error: shouldAppendErrorClass($v.form.email), valid: shouldAppendValidClass($v.form.email)}"
             id="email"
           />
-            <p v-if="!$v.form.email.email && $v.form.email.$error" class="error-message">
+          <div v-if="$v.form.email.$error">
+            <p v-if="!$v.form.email.required" class="error-message">
+              Email is required so we can send you the newsletter.
+            </p>
+            <p v-if="!$v.form.email.email" class="error-message">
               Invalid email address
             </p>
+          </div>
         </div>
 
-        <div>
-          <button>Submit</button>
+        <div class="form-group">
+          <label for="food">Pizza or Burger:</label>
+          <input
+            v-model.number="form.food"
+            @blur="$v.form.food.$touch()"
+            :class="{error: shouldAppendErrorClass($v.form.food), valid: shouldAppendValidClass($v.form.food)}"
+            id="food"
+          />
+          <p
+            v-if="$v.form.food.$error && !$v.form.food.pizzaOrBurguer"
+            class="error-message"
+          >
+            Sorry! We only serve pizzas and burguers
+          </p>
         </div>
+
+        <button>Submit</button>
       </form>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
